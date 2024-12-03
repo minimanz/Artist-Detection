@@ -1,0 +1,54 @@
+class_names = ['Gogh', 'Monet', 'Rembrandt']
+
+train_data = train_datagen.flow_from_directory(
+    image_dir,
+    target_size=(150, 150),
+    batch_size=32,
+    class_mode='categorical',
+    subset='training',
+    classes=class_names
+)
+
+val_data = train_datagen.flow_from_directory(
+    image_dir,
+    target_size=(150, 150),
+    batch_size=32,
+    class_mode='categorical',
+    subset='validation',
+    classes=class_names
+)
+
+print("Class indices:", train_data.class_indices)
+
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+history = model.fit(
+    train_data,
+    validation_data=val_data,
+    epochs=10,
+    verbose=1
+)
+
+model.save("artist_classifier.h5")
+
+import matplotlib.pyplot as plt
+
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend(['Train', 'Validation'], loc='upper left')
+plt.show()
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend(['Train', 'Validation'], loc='upper left')
+plt.show()
